@@ -1,5 +1,6 @@
 ﻿using CQS.Demo.ConsoleApp.Cqs;
 using CQS.Demo.ConsoleApp.Database;
+using CQS.Demo.ConsoleApp.Entities;
 using CQS.Demo.ConsoleApp.Infrastructure;
 using System.Linq;
 
@@ -7,8 +8,8 @@ namespace CQS.Demo.ConsoleApp.Queries
 {
     public class GetBooksQueryHandler : QueryHandler<GetBooksQuery, GetBooksQueryResult>
     {
-        public GetBooksQueryHandler(ApplicationDbContext applicationDbContext, ILogger logger)
-            : base(applicationDbContext, logger)
+        public GetBooksQueryHandler(IBookRepository repository, ILogger logger)
+            : base(repository, logger)
         {
         }
 
@@ -16,7 +17,7 @@ namespace CQS.Demo.ConsoleApp.Queries
         {
             var _result = new GetBooksQueryResult();
 
-            var _bookQuery = ApplicationDbContext.Books.AsQueryable();
+            var _bookQuery = Repository.GetAll();
 
             if (request.YearOfPublication != null)
             {

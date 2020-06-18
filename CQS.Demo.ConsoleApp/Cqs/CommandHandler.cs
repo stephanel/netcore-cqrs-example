@@ -6,12 +6,12 @@ namespace CQS.Demo.ConsoleApp.Cqs
 {
     public abstract class CommandHandler<TParameter> : ICommandHandler<TParameter>
     {
-        protected readonly ApplicationDbContext ApplicationDbContext;
+        protected readonly IBookRepository Repository;
         private readonly ILogger _logger;
 
-        protected CommandHandler(ApplicationDbContext applicationDbContext, ILogger logger)
+        protected CommandHandler(IBookRepository repository, ILogger logger)
         {
-            ApplicationDbContext = applicationDbContext;
+            Repository = repository;
             _logger = logger;
         }
 

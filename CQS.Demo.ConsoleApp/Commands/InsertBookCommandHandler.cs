@@ -6,16 +6,16 @@ namespace CQS.Demo.ConsoleApp.Commands
 {
     public class InsertBookCommandHandler : CommandHandler<InsertBookCommand>
     {
-        public InsertBookCommandHandler(ApplicationDbContext applicationDbContext, ILogger logger)
-           : base(applicationDbContext, logger)
+        public InsertBookCommandHandler(IBookRepository repository, ILogger logger)
+           : base(repository, logger)
         {
         }
 
         protected override void Handle(InsertBookCommand request)
         {
-            ApplicationDbContext.Books.Add(request.Book);
+            Repository.Add(request.Book);
 
-            ApplicationDbContext.SaveChanges();
+            Repository.SaveChanges();
         }
     }
 }

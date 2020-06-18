@@ -8,12 +8,12 @@ namespace CQS.Demo.ConsoleApp.Cqs
         where TResult : IResult, new()
         where TParameter : IQuery, new()
     {
-        protected readonly ApplicationDbContext ApplicationDbContext;
+        protected readonly IBookRepository Repository;
         private readonly ILogger _logger;
 
-        protected QueryHandler(ApplicationDbContext applicationDbContext, ILogger logger)
+        protected QueryHandler(IBookRepository repository, ILogger logger)
         {
-            ApplicationDbContext = applicationDbContext;
+            Repository = repository;
             _logger = logger;
         }
 

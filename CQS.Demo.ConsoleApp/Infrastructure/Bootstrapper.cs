@@ -23,6 +23,7 @@ namespace CQS.Demo.ConsoleApp.Infrastructure
                 .WithParameter(new TypedParameter(typeof(DbContextOptions<ApplicationDbContext>), options))
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<BookRepository>().As<IBookRepository>();
             builder.RegisterType<Logger>().As<ILogger>();
 
             //register the QueryDispatcher and CommandDispatcher
