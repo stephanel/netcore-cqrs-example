@@ -1,2 +1,2 @@
-# netcore-cqs-example
+# netcore-cqrs-example
 An example of CQRS pattern implementation
