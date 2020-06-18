@@ -8,8 +8,9 @@ namespace CQS.Demo.ConsoleApp.Database
 {
     public interface IBookRepository
     {
-        void Add(Book entity);
         IQueryable<Book> GetAll();
+        void Add(Book entity);
+        void RemoveRange(IEnumerable<Book> books);
         void SaveChanges();
     }
 }

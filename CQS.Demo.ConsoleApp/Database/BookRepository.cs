@@ -25,6 +25,11 @@ namespace CQS.Demo.ConsoleApp.Database
             return _context.Books.AsQueryable();
         }
 
+        public void RemoveRange(IEnumerable<Book> books)
+        {
+            _context.Books.RemoveRange(books);
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

@@ -23,21 +23,11 @@ namespace CQS.Demo.ConsoleApp.Infrastructure
                 .WithParameter(new TypedParameter(typeof(DbContextOptions<ApplicationDbContext>), options))
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<BookRepository>().As<IBookRepository>();
-            builder.RegisterType<Logger>().As<ILogger>();
-
-            //register the QueryDispatcher and CommandDispatcher
-            builder.RegisterType<QueryDispatcher>().As<IQueryDispatcher>();
-            builder.RegisterType<CommandDispatcher>().As<ICommandDispatcher>();
-
             var _assembly = Assembly.GetExecutingAssembly();
 
-            //Register all QHandlers and all CHandlers found in this assembly
+            // register others types implementing interfaces of assembly
             builder.RegisterAssemblyTypes(_assembly)
-                   .AsClosedTypesOf(typeof(IQueryHandler<,>));
-            builder.RegisterAssemblyTypes(_assembly)
-                   .AsClosedTypesOf(typeof(ICommandHandler<>));
-
+                .AsImplementedInterfaces();
 
             return builder.Build();
         }

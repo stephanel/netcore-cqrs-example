@@ -7,6 +7,7 @@ using CQS.Demo.ConsoleApp.Infrastructure;
 using CQS.Demo.ConsoleApp.Queries;
 using System;
 using System.Linq;
+using CQS.Demo.ConsoleApp.Extensions;
 
 namespace CQS.Demo.ConsoleApp
 {
@@ -19,9 +20,10 @@ namespace CQS.Demo.ConsoleApp
             var _container = Bootstrapper.Bootstrap();
             _logger = _container.Resolve<ILogger>();
 
-            LogInfo("Bootsrapping application..");
+            LogInfo("Application started!");
             WithoutCqs(_container);
-            WithCqs(_container);
+            LogEmptyLine();
+            UsingCqs(_container);
             System.Console.ReadLine();
         }
 
@@ -30,46 +32,52 @@ namespace CQS.Demo.ConsoleApp
             LogInfo("Without CQS...");
 
             //resolve context
-            var _context = container.Resolve<ApplicationDbContext>();
+            var repository = container.Resolve<IBookRepository>();
+
+            var allBooks = repository.GetAll();
 
             //save some books if there are none in the database
-            if (!_context.Books.Any())
+            if (!allBooks.Any())
             {
-                _context.Books.Add(Books.ExtremeProgrammingExplained);
-                _context.Books.Add(Books.ThePragmaticProgammer);
-                _context.Books.Add(Books.TheCleanCoder);
-                _context.Books.Add(Books.Refactoring);
+                LogInfo("Inserting books...");
 
-                _context.SaveChanges();
+                repository.Add(Books.ExtremeProgrammingExplained);
+                repository.Add(Books.ThePragmaticProgammer);
+                repository.Add(Books.TheCleanCoder);
+                repository.Add(Books.Refactoring);
+
+                repository.SaveChanges();
 
                 LogInfo("Books saved!");
             }
 
             LogInfo("Get all books...");
 
-            foreach (var _book in _context.Books)
+            foreach (var _book in allBooks)
             {
                 LogBook(_book);
             }
 
             LogInfo("Get books published in 2004...");
 
-            var booksResults = _context.Books.Where(book => book.DatePublished.Year == 2004);
+            var booksResults = allBooks.Where(book => book.DatePublished.Year == 2004);
 
             foreach (var _book in booksResults)
             {
                 LogBook(_book);
             }
 
-            _context.Books.RemoveRange(_context.Books);
-            _context.SaveChanges();
+            repository.RemoveRange(allBooks);
+            repository.SaveChanges();
         }
 
-        private static void WithCqs(IContainer container)
+        private static void UsingCqs(IContainer container)
         {
             LogInfo("Using CQS...");
 
             var _commandDispatcher = container.Resolve<ICommandDispatcher>();
+
+            LogInfo("Inserting books...");
 
             _commandDispatcher.Dispatch<InsertBookCommand>(new InsertBookCommand(Books.ExtremeProgrammingExplained));
             _commandDispatcher.Dispatch<InsertBookCommand>(new InsertBookCommand(Books.ThePragmaticProgammer));
@@ -97,9 +105,11 @@ namespace CQS.Demo.ConsoleApp
             }
         }
 
+        static void LogEmptyLine() => _logger.Info("\r\n");
         static void LogInfo(string message) => _logger.Info(message);
         
         static void LogBook(Book book)
-            => _logger.Info("Title: {0}, Authors: {1}, DatePublished: {2:MM/dd/yyyy}", book.Title, book.Authors, book.DatePublished);
+            => _logger.Info("Title: {0}, Authors: {1}, DatePublished: {2:MM/dd/yyyy}",
+                book.Title.WithEllipsis(30), book.Authors, book.DatePublished);
     }
 }

@@ -23,6 +23,8 @@ namespace CQS.Demo.ConsoleApp.Cqs
 
             try
             {
+                _logger.Info($"Executing query {typeof(TParameter).Name}.");
+
                 _queryResult = Handle(query);
 
             }
